@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.InputDevice
 import android.view.KeyEvent
@@ -61,6 +62,7 @@ import com.swordfish.lemuroid.lib.saves.SavesManager
 import com.swordfish.lemuroid.lib.saves.StatesManager
 import com.swordfish.lemuroid.lib.saves.StatesPreviewManager
 import com.swordfish.lemuroid.lib.storage.RomFiles
+import com.swordfish.libretrodroid.AspectRatioGLSurfaceView
 import com.swordfish.libretrodroid.Controller
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.GLRetroView.Companion.MOTION_SOURCE_ANALOG_LEFT
@@ -340,6 +342,7 @@ abstract class BaseGameActivity : ImmersiveActivity() {
         val data =
             GLRetroViewData(this).apply {
                 coreFilePath = gameData.coreLibrary
+                Log.i("CORE LIB", gameData.coreLibrary)
 
                 when (val gameFiles = gameData.gameFiles) {
                     is RomFiles.Standard -> {
@@ -1011,6 +1014,10 @@ abstract class BaseGameActivity : ImmersiveActivity() {
                     this.frameSpeed = if (fastForwardEnabled) 2 else 1
                 }
             }
+            if (data?.hasExtra(GameMenuContract.RESULT_RESIZE_MODE) == true) {
+                val resizeMode = data.getIntExtra(GameMenuContract.RESULT_RESIZE_MODE, 0)
+                retroGameView?.setResizeMode(resizeMode)
+            }
         }
     }
 
@@ -1081,12 +1088,15 @@ abstract class BaseGameActivity : ImmersiveActivity() {
     ) {
         val messageId =
             when (gameError) {
+
                 is GameLoaderError.GLIncompatible -> getString(R.string.game_loader_error_gl_incompatible)
                 is GameLoaderError.Generic -> getString(R.string.game_loader_error_generic)
-                is GameLoaderError.LoadCore ->
+                is GameLoaderError.LoadCore -> {
+                    Log.e("LOAD CORE", "ERROR")
                     getString(
                         com.swordfish.lemuroid.ext.R.string.game_loader_error_load_core,
                     )
+                }
                 is GameLoaderError.LoadGame -> getString(R.string.game_loader_error_load_game)
                 is GameLoaderError.Saves -> getString(R.string.game_loader_error_save)
                 is GameLoaderError.UnsupportedArchitecture ->
@@ -1099,6 +1109,7 @@ abstract class BaseGameActivity : ImmersiveActivity() {
                         gameError.missingFiles,
                     )
             }
+
 
         performErrorFinish(messageId)
     }

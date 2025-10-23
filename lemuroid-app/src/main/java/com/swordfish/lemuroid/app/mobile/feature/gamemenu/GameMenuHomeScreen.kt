@@ -138,6 +138,17 @@ fun GameMenuHomeScreen(
             },
         )
 
+        LemuroidSettingsMenuLink(
+            title = { Text(text = stringResource(id = R.string.game_menu_edit_resolution)) },
+            icon = {
+                Icon(
+                    painterResource(R.drawable.ic_television),
+                    contentDescription = stringResource(id = R.string.game_menu_edit_resolution),
+                )
+            },
+            onClick = { navController.navigateToRoute(GameMenuRoute.CHANGE_RESOLUTION) },
+        )
+
         if (gameMenuRequest.advancedCoreOptions.isNotEmpty() || gameMenuRequest.coreOptions.isNotEmpty()) {
             LemuroidSettingsMenuLink(
                 title = { Text(text = stringResource(id = R.string.game_menu_settings)) },

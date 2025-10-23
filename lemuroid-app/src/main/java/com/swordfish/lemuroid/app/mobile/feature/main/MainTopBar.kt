@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -94,13 +95,13 @@ fun LemuroidTopAppBar(
                     onUpdateQueryString = onUpdateQueryString,
                 )
             } else {
-                Text(text = stringResource(route.titleId))
+                Text(text = stringResource(route.titleId), fontWeight = FontWeight.Bold)
             }
         },
         colors =
             TopAppBarDefaults.topAppBarColors(
-                scrolledContainerColor = topBarColor,
-                containerColor = topBarColor,
+                scrolledContainerColor = Color.Transparent,
+                containerColor = Color.Transparent
             ),
         navigationIcon = {
             AnimatedVisibility(

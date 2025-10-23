@@ -29,7 +29,6 @@ class TVGameActivity : BaseGameActivity() {
             .getEnabledInputsObservable()
             .filter { it.isEmpty() }
             .safeCollect {
-                displayToast(R.string.tv_game_message_missing_gamepad)
             }
     }
 }

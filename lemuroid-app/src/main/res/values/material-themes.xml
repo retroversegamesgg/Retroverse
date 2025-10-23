@@ -70,4 +70,8 @@
     <style name="LemuroidMaterialStyle.AlertDialogTheme" parent="@style/ThemeOverlay.AppCompat.Dialog.Alert">
         <item name="android:colorBackground">?attr/colorSurface</item>
     </style>
+
+    <style name="Theme.Transparent" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>

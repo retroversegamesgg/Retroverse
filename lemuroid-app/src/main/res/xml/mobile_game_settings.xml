@@ -45,6 +45,11 @@
         app:icon="@drawable/ic_menu_touch"/>
 
     <Preference
+        android:key="pref_game_edit_resolution"
+        android:title="@string/game_menu_edit_resolution"
+        app:icon="@drawable/ic_television"/>
+
+    <Preference
         android:key="pref_game_section_core_options"
         android:title="@string/game_menu_settings"
         app:icon="@drawable/ic_menu_settings"/>

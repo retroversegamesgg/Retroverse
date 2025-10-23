@@ -1,5 +1,6 @@
 package com.swordfish.lemuroid.app.utils.android.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.alorma.compose.settings.storage.base.SettingValueState
 import com.alorma.compose.settings.ui.SettingsMenuLink
@@ -109,10 +113,13 @@ fun LemuroidCardSettingsGroup(
     title: @Composable (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Surface {
+    Surface(
+        color = Color.Transparent
+    ) {
         Column(
             modifier =
             modifier
+                .background(Color.Transparent)
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp),
         ) {
@@ -155,6 +162,18 @@ fun LemuroidSettingsSlider(
         enabled = enabled,
         colors = if (enabled) defaultColors else disabledColors
     )
+}
+
+@Composable
+fun gradientBackgroundColor() : Brush {
+        return Brush.linearGradient(
+            colors = listOf(
+                Color(0xFF351949),
+                Color.Black,
+            ),
+            start = Offset(0f, 0f),
+            end = Offset(0f, Float.POSITIVE_INFINITY)
+        )
 }
 
 @Composable

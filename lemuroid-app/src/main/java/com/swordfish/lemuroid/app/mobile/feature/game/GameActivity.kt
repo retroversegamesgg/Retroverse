@@ -51,6 +51,7 @@ import com.swordfish.lemuroid.common.math.linearInterpolation
 import com.swordfish.lemuroid.lib.controller.ControllerConfig
 import com.swordfish.lemuroid.lib.controller.TouchControllerCustomizer
 import com.swordfish.lemuroid.lib.controller.TouchControllerSettingsManager
+import com.swordfish.libretrodroid.AspectRatioGLSurfaceView
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.radialgamepad.library.RadialGamePad
 import com.swordfish.radialgamepad.library.config.RadialGamePadTheme

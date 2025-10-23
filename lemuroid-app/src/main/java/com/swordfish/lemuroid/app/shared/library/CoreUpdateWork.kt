@@ -1,6 +1,7 @@
 package com.swordfish.lemuroid.app.shared.library
 
 import android.content.Context
+import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.ListenableWorker
@@ -56,6 +57,7 @@ class CoreUpdateWork(context: Context, workerParams: WorkerParameters) :
                     .map { coresSelection.getCoreConfigForSystem(it) }
                     .map { it.coreID }
                     .toList()
+            Log.i("DOWNLOAD", "DOWNLOADING CORE")
 
             coreUpdater.downloadCores(applicationContext, cores)
         } catch (e: Throwable) {

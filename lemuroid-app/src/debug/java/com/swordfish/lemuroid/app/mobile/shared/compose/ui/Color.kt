@@ -2,7 +2,7 @@ package com.swordfish.lemuroid.app.mobile.shared.compose.ui
 
 import androidx.compose.ui.graphics.Color
 
-val md_theme_light_primary = Color(0xFF006E28)
+val md_theme_light_primary = Color(0xFF351949)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 val md_theme_light_primaryContainer = Color(0xFF6BFF84)
 val md_theme_light_onPrimaryContainer = Color(0xFF002107)

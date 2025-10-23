@@ -2,6 +2,7 @@
 
 package com.swordfish.lemuroid.app.mobile.feature.gamemenu
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -32,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
@@ -42,6 +44,7 @@ import androidx.navigation.compose.rememberNavController
 import com.swordfish.lemuroid.R
 import com.swordfish.lemuroid.app.mobile.feature.gamemenu.coreoptions.GameMenuCoreOptionsScreen
 import com.swordfish.lemuroid.app.mobile.feature.gamemenu.coreoptions.GameMenuCoreOptionsViewModel
+import com.swordfish.lemuroid.app.mobile.feature.gamemenu.resolution.GameMenuResizeModeScreen
 import com.swordfish.lemuroid.app.mobile.feature.gamemenu.states.GameMenuStatesScreen
 import com.swordfish.lemuroid.app.mobile.feature.gamemenu.states.GameMenuStatesViewModel
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.AppTheme
@@ -211,9 +214,33 @@ class GameMenuActivity : RetrogradeComponentActivity() {
                             gameMenuRequest,
                         )
                     }
+                    composable(GameMenuRoute.CHANGE_RESOLUTION) {
+                        val context = LocalContext.current
+                        val sharedPrefs = remember {
+                            context.getSharedPreferences("lemuroid_prefs", Context.MODE_PRIVATE)
+                        }
+                        val currentMode = remember {
+                            sharedPrefs.getInt("pref_video_resize_mode", 0)
+                        }
+
+                        GameMenuResizeModeScreen(
+                            currentResizeMode = currentMode,
+                            onApply = { newMode ->
+                                sharedPrefs.edit()
+                                    .putInt("pref_video_resize_mode", newMode)
+                                    .apply()
+
+                                onResult {
+                                    putExtra(GameMenuContract.RESULT_RESIZE_MODE, newMode)
+                                }
+                            }
+                        )
+                    }
+
+                }
                 }
             }
-        }
+
     }
 
     @Composable

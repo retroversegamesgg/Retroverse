@@ -44,6 +44,11 @@ enum class GameMenuRoute(
         titleId = R.string.game_menu_settings,
         parent = HOME,
     ),
+    CHANGE_RESOLUTION(
+        route = "changeResolution",
+        titleId = R.string.game_menu_edit_resolution,
+        parent = HOME
+    )
     ;
 
     fun canGoBack(): Boolean {

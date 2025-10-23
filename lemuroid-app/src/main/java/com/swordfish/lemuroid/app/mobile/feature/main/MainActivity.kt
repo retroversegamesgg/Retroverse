@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
@@ -13,9 +14,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -44,6 +48,7 @@ import com.swordfish.lemuroid.app.mobile.feature.settings.inputdevices.InputDevi
 import com.swordfish.lemuroid.app.mobile.feature.settings.savesync.SaveSyncSettingsScreen
 import com.swordfish.lemuroid.app.mobile.feature.settings.savesync.SaveSyncSettingsViewModel
 import com.swordfish.lemuroid.app.mobile.feature.shortcuts.ShortcutsGenerator
+import com.swordfish.lemuroid.app.mobile.feature.splash.RetroVerseSplashScreen
 import com.swordfish.lemuroid.app.mobile.feature.systems.MetaSystemsScreen
 import com.swordfish.lemuroid.app.mobile.feature.systems.MetaSystemsViewModel
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.AppTheme
@@ -54,6 +59,7 @@ import com.swordfish.lemuroid.app.shared.input.InputDeviceManager
 import com.swordfish.lemuroid.app.shared.main.BusyActivity
 import com.swordfish.lemuroid.app.shared.main.GameLaunchTaskHandler
 import com.swordfish.lemuroid.app.shared.settings.SettingsInteractor
+import com.swordfish.lemuroid.app.utils.android.settings.gradientBackgroundColor
 import com.swordfish.lemuroid.common.coroutines.safeLaunch
 import com.swordfish.lemuroid.ext.feature.review.ReviewManager
 import com.swordfish.lemuroid.lib.android.RetrogradeComponentActivity
@@ -71,6 +77,7 @@ import dagger.Provides
 import de.charlex.compose.material3.HtmlText
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -113,8 +120,20 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
         }
 
         setContent {
+
             val navController = rememberNavController()
-            MainScreen(navController)
+            var showSplash by remember { mutableStateOf(true) }
+
+            LaunchedEffect(Unit) {
+                delay(2000)
+                showSplash = false
+            }
+
+            if (showSplash) {
+                RetroVerseSplashScreen()
+            } else {
+                MainScreen(navController)
+            }
         }
     }
 
@@ -165,6 +184,7 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
                     .value
 
             Scaffold(
+                modifier = Modifier.fillMaxSize().background(gradientBackgroundColor()),
                 topBar = {
                     MainTopBar(
                         currentRoute = currentRoute,
@@ -175,6 +195,7 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
                     )
                 },
                 bottomBar = { MainNavigationBar(currentRoute, navController) },
+                containerColor = Color.Transparent,
             ) { padding ->
                 NavHost(
                     modifier = Modifier.fillMaxSize(),
