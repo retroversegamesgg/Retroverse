@@ -68,10 +68,22 @@ class LibretroDBMetadataProvider(private val ovgdbManager: LibretroDBManager) :
             ?.let { convertToGameMetadata(it) }
     }
 
+    private suspend fun findByName(
+        db: LibretroDatabase,
+        file: StorageFile,
+    ): GameMetadata? {
+        val fileNameWithoutExtension = file.name.substringBeforeLast(".")
+
+        return db.gameDao().findByName( fileNameWithoutExtension)
+            .filterNullable { extractGameSystem(it).scanOptions.scanByFilename }
+            ?.let { convertToGameMetadata(it) }
+    }
+
     private suspend fun findByPathAndFilename(
         db: LibretroDatabase,
         file: StorageFile,
     ): GameMetadata? {
+
         return db.gameDao().findByFileName(file.name)
             .filterNullable { extractGameSystem(it).scanOptions.scanByPathAndFilename }
             .filterNullable { parentContainsSystem(file.path, extractGameSystem(it).id.dbname) }
@@ -87,10 +99,12 @@ class LibretroDBMetadataProvider(private val ovgdbManager: LibretroDBManager) :
                 .firstOrNull { it.supportedExtensions.contains(file.extension) }
 
         return system?.let {
+            val fileNameWithoutExtension = file.name.substringBeforeLast(".")
+
             GameMetadata(
                 name = file.extensionlessName,
                 romName = file.name,
-                thumbnail = null,
+                thumbnail = computeCoverUrl(system, fileNameWithoutExtension),
                 system = it.id.dbname,
                 developer = null,
             )
@@ -180,4 +194,8 @@ class LibretroDBMetadataProvider(private val ovgdbManager: LibretroDBManager) :
 
         return "http://thumbnails.libretro.com/$systemName/$imageType/$thumbGameName.png"
     }
+
+
+
+
 }

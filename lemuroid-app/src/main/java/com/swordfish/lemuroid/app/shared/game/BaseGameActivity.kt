@@ -1,6 +1,8 @@
 package com.swordfish.lemuroid.app.shared.game
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
@@ -55,6 +57,7 @@ import com.swordfish.lemuroid.lib.game.GameLoaderException
 import com.swordfish.lemuroid.lib.library.ExposedSetting
 import com.swordfish.lemuroid.lib.library.GameSystem
 import com.swordfish.lemuroid.lib.library.SystemCoreConfig
+import com.swordfish.lemuroid.lib.library.SystemID
 import com.swordfish.lemuroid.lib.library.db.entity.Game
 import com.swordfish.lemuroid.lib.saves.IncompatibleStateException
 import com.swordfish.lemuroid.lib.saves.SaveState
@@ -62,7 +65,6 @@ import com.swordfish.lemuroid.lib.saves.SavesManager
 import com.swordfish.lemuroid.lib.saves.StatesManager
 import com.swordfish.lemuroid.lib.saves.StatesPreviewManager
 import com.swordfish.lemuroid.lib.storage.RomFiles
-import com.swordfish.libretrodroid.AspectRatioGLSurfaceView
 import com.swordfish.libretrodroid.Controller
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.GLRetroView.Companion.MOTION_SOURCE_ANALOG_LEFT
@@ -97,6 +99,7 @@ import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.io.File
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -242,7 +245,7 @@ abstract class BaseGameActivity : ImmersiveActivity() {
 
     private suspend fun initializeRetroGameViewErrorsFlow() {
         retroGameViewFlow().getGLRetroErrors()
-            .catch { Timber.e(it, "Exception in GLRetroErrors. Ironic.") }
+            .catch { Log.e(it.message + it.cause, "Exception in GLRetroErrors. Ironic.") }
             .collect { handleRetroViewError(it) }
     }
 
@@ -367,6 +370,7 @@ abstract class BaseGameActivity : ImmersiveActivity() {
                         screenFilter,
                         system,
                     )
+
                 preferLowLatencyAudio = lowLatencyAudio
                 rumbleEventsEnabled = enableRumble
                 skipDuplicateFrames = systemCoreConfig.skipDuplicateFrames
@@ -393,6 +397,11 @@ abstract class BaseGameActivity : ImmersiveActivity() {
             }
         }
 
+        val sharedPrefs = getSharedPreferences("lemuroid_prefs", Context.MODE_PRIVATE)
+        val currentMode = sharedPrefs.getInt("pref_video_resize_mode", 0)
+
+        retroGameView.setResizeMode(currentMode)
+
         if (BuildConfig.DEBUG) {
             runCatching {
                 printRetroVariables(retroGameView)
@@ -407,7 +416,7 @@ abstract class BaseGameActivity : ImmersiveActivity() {
             // Some cores do not immediately call SET_VARIABLES so we might need to wait a little bit
             delay(1.seconds)
             retroGameView.getVariables().forEach {
-                Timber.i("Libretro variable: $it")
+                Log.i("Libretro variable:", it.value.toString())
             }
         }
     }
@@ -1092,7 +1101,6 @@ abstract class BaseGameActivity : ImmersiveActivity() {
                 is GameLoaderError.GLIncompatible -> getString(R.string.game_loader_error_gl_incompatible)
                 is GameLoaderError.Generic -> getString(R.string.game_loader_error_generic)
                 is GameLoaderError.LoadCore -> {
-                    Log.e("LOAD CORE", "ERROR")
                     getString(
                         com.swordfish.lemuroid.ext.R.string.game_loader_error_load_core,
                     )

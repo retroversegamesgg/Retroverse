@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import com.swordfish.lemuroid.R
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidGameTexts
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidSmallGameImage
+import com.swordfish.lemuroid.app.shared.GamePreview
 import com.swordfish.lemuroid.lib.library.db.entity.Game
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,17 +83,31 @@ fun MainGameContextActions(
             onDismissRequest = { selectedGameState.value = null },
             scrimColor = Color.Transparent,
         ) {
-            ContextActionContent(
-                selectedGame = selectedGame,
-                onGamePlay = onGamePlay,
-                selectedGameState = selectedGameState,
-                onGameRestart = onGameRestart,
-                onFavoriteToggle = onFavoriteToggle,
-                shortcutSupported = shortcutSupported,
-                onCreateShortcut = onCreateShortcut,
-            )
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                // 🎥 Preview do jogo (fica acima da lista de ações)
+                GamePreview(
+                    game = selectedGame,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Black)
+                )
+
+                // 🧩 Conteúdo original (as ações)
+                ContextActionContent(
+                    selectedGame = selectedGame,
+                    onGamePlay = onGamePlay,
+                    selectedGameState = selectedGameState,
+                    onGameRestart = onGameRestart,
+                    onFavoriteToggle = onFavoriteToggle,
+                    shortcutSupported = shortcutSupported,
+                    onCreateShortcut = onCreateShortcut,
+                )
+            }
         }
     }
+
 }
 
 @Composable

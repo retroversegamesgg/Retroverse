@@ -117,6 +117,10 @@ class LemuroidInputDeviceGamePad(private val device: InputDevice) : LemuroidInpu
                 KeyEvent.KEYCODE_BUTTON_THUMBL,
                 KeyEvent.KEYCODE_BUTTON_THUMBR,
                 KeyEvent.KEYCODE_BUTTON_MODE,
+                KeyEvent.KEYCODE_DPAD_UP,
+                KeyEvent.KEYCODE_DPAD_DOWN,
+                KeyEvent.KEYCODE_DPAD_LEFT,
+                KeyEvent.KEYCODE_DPAD_RIGHT,
             )
     }
 }

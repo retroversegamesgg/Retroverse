@@ -241,6 +241,7 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
                             onGameFavoriteToggle = onGameFavoriteToggle,
                             onResetSearchQuery = { mainViewModel.changeQueryString("") },
                         )
+
                     }
                     composable(MainRoute.SYSTEMS) {
                         MetaSystemsScreen(

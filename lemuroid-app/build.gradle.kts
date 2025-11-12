@@ -11,7 +11,7 @@ android {
     defaultConfig {
         versionCode = 220
         versionName = "1.16.2" // Always remember to update Cores Tag!
-        applicationId = "com.swordfish.lemuroid"
+        applicationId = "com.swordfish.retroverse"
     }
     flavorDimensions += listOf("opensource", "cores")
 
@@ -41,6 +41,18 @@ android {
                 ":lemuroid_core_citra",
             ),
         )
+    }
+
+    applicationVariants.all {
+        outputs.all {
+            (this as? com.android.build.gradle.internal.api.BaseVariantOutputImpl)?.let { output ->
+                val appName = "Retroverse"
+                val versionName = "1.0.0"
+                val buildType = buildType.name
+
+                output.outputFileName = "$appName-$versionName-$buildType.apk"
+            }
+        }
     }
 
     // Since some dependencies are closed source we make a completely free as in free speech variant.
@@ -95,7 +107,7 @@ android {
             isMinifyEnabled = true
             signingConfig = signingConfigs["release"]
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-            resValue("string", "lemuroid_name", "Lemuroid")
+            resValue("string", "lemuroid_name", "Retroverse")
         }
         getByName("debug") {
             isDebuggable = true
@@ -104,6 +116,7 @@ android {
             resValue("string", "lemuroid_name", "RetroverseDebug")
         }
     }
+
 
     lint {
         disable += setOf("MissingTranslation", "ExtraTranslation", "EnsureInitializerMetadata")
