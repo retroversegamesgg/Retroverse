@@ -174,7 +174,9 @@ abstract class BaseGameActivity : ImmersiveActivity() {
 
         game = intent.getSerializableExtra(EXTRA_GAME) as Game
         systemCoreConfig = intent.getSerializableExtra(EXTRA_SYSTEM_CORE_CONFIG) as SystemCoreConfig
+        Timber.d("CONSOLE ${systemCoreConfig}")
         system = GameSystem.findById(game.systemId)
+        Timber.d("SISTEMA ${system}")
 
         lifecycleScope.launch {
             loadGame()
@@ -349,18 +351,57 @@ abstract class BaseGameActivity : ImmersiveActivity() {
 
                 when (val gameFiles = gameData.gameFiles) {
                     is RomFiles.Standard -> {
+                        val gameFile = gameFiles.files.first()
                         gameFilePath = gameFiles.files.first().absolutePath
+
+                        Timber.d("Loading game file: ${gameFile.name}")
+                        Timber.d("File size: ${gameFile.length() / 1024 / 1024} MB")
+                        Timber.d("File extension: ${gameFile.extension}")
+                        Timber.d("File exists: ${gameFile.exists()}")
+                        Timber.d("System directory: ${systemDirectory}")
+                        Timber.d("File can read: ${gameFile.canRead()}")
                     }
                     is RomFiles.Virtual -> {
-                        gameVirtualFiles =
-                            gameFiles.files
-                                .map { VirtualFile(it.filePath, it.fd) }
+                        // Dolphin NÃO suporta virtual files, precisa copiar para arquivo real
+                        if (system.id == SystemID.GAMECUBE || system.id == SystemID.WII) {
+                            val virtualFile = gameFiles.files.first()
+                            Timber.d("Dolphin detected - copying virtual file to cache")
+                            Timber.d("Virtual file: ${virtualFile.filePath}")
+
+                            // Copiar para cache
+                            val cacheDir = File(cacheDir, "dolphin-games")
+                            cacheDir.mkdirs()
+
+                            val fileName = virtualFile.filePath.substringAfterLast("/")
+                            val cachedFile = File(cacheDir, fileName)
+
+                            Timber.d("Copying to: ${cachedFile.absolutePath}")
+
+                            // Copiar usando ParcelFileDescriptor
+                            val pfd = virtualFile.fd
+                            val inputStream = android.os.ParcelFileDescriptor.AutoCloseInputStream(pfd)
+
+                            inputStream.use { input ->
+                                cachedFile.outputStream().use { output ->
+                                    input.copyTo(output)
+                                }
+                            }
+
+                            gameFilePath = cachedFile.absolutePath
+                            Timber.d("File copied successfully - size: ${cachedFile.length() / 1024 / 1024} MB")
+                        } else {
+                            // Outros cores suportam virtual files
+                            gameVirtualFiles = gameFiles.files.map {
+                                VirtualFile(it.filePath, it.fd)
+                            }
+                        }
                     }
                 }
 
                 systemDirectory = gameData.systemDirectory.absolutePath
                 savesDirectory = gameData.savesDirectory.absolutePath
                 variables = gameData.coreVariables.map { Variable(it.key, it.value) }.toTypedArray()
+                Timber.d("Core variables: ${gameData.coreVariables.joinToString { "${it.key}=${it.value}" }}")
                 saveRAMState = gameData.saveRAMData
                 shader =
                     ShaderChooser.getShaderForSystem(
@@ -370,6 +411,8 @@ abstract class BaseGameActivity : ImmersiveActivity() {
                         screenFilter,
                         system,
                     )
+                Timber.d(system.toString())
+                Timber.d(shader.toString())
 
                 preferLowLatencyAudio = lowLatencyAudio
                 rumbleEventsEnabled = enableRumble

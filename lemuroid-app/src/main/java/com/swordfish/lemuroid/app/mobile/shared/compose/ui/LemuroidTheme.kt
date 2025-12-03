@@ -105,7 +105,6 @@ fun AppTheme(
             val systemUiController = rememberSystemUiController()
 
             SideEffect {
-                systemUiController.setSystemBarsColor(statusBarColor, !darkTheme)
                 systemUiController.systemBarsDarkContentEnabled = !darkTheme
             }
         }

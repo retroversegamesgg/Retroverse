@@ -1,8 +1,14 @@
 package com.swordfish.lemuroid.app.mobile.feature.main
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
+import android.view.View
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
@@ -20,6 +26,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -78,6 +86,7 @@ import de.charlex.compose.material3.HtmlText
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import java.io.File
 import javax.inject.Inject
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -120,13 +129,20 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
         }
 
         setContent {
-
             val navController = rememberNavController()
             var showSplash by remember { mutableStateOf(true) }
 
             LaunchedEffect(Unit) {
                 delay(2000)
                 showSplash = false
+            }
+
+            LaunchedEffect(showSplash) {
+                if (!showSplash) {
+                    ensureAllFilesPermission(this@MainActivity) {
+                        createRomsFolders()
+                    }
+                }
             }
 
             if (showSplash) {
@@ -136,6 +152,42 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Environment.isExternalStorageManager()) {
+                createRomsFolders()
+            }
+        }
+    }
+
+    private fun ensureAllFilesPermission(context: Context, onGranted: () -> Unit) {
+        if (Environment.isExternalStorageManager()) {
+            onGranted()
+        } else {
+            val intent = Intent(
+                ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                Uri.parse("package:${context.packageName}")
+            )
+            startActivity(intent)
+        }
+    }
+
+    private fun createRomsFolders() {
+        val base = File(Environment.getExternalStorageDirectory(), "Retroverse")
+
+        val psx = File(base, "psx")
+        val fbneo = File(base, "fbneo")
+        val psp = File(base, "psp")
+
+        base.mkdirs()
+        psx.mkdirs()
+        fbneo.mkdirs()
+        psp.mkdirs()
+    }
+
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable

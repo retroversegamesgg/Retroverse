@@ -47,7 +47,7 @@ android {
         outputs.all {
             (this as? com.android.build.gradle.internal.api.BaseVariantOutputImpl)?.let { output ->
                 val appName = "Retroverse"
-                val versionName = "1.0.0"
+                val versionName = "1.0.2"
                 val buildType = buildType.name
 
                 output.outputFileName = "$appName-$versionName-$buildType.apk"
@@ -212,7 +212,6 @@ dependencies {
     implementation(deps.libs.composeSettings.uiTilesExtended)
     implementation(deps.libs.composeSettings.diskStorage)
     implementation(deps.libs.composeSettings.memoryStorage)
-
     implementation(deps.libs.libretrodroid)
 
     // Uncomment this when using a local aar file.

@@ -37,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import com.swordfish.lemuroid.R
+import com.swordfish.lemuroid.app.mobile.shared.compose.ui.HomeBanner
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidGameCard
 import com.swordfish.lemuroid.app.utils.android.ComposableLifecycle
 import com.swordfish.lemuroid.app.utils.android.settings.gradientBackgroundColor
@@ -104,6 +105,18 @@ private fun HomeScreen(
                 .padding(top = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        HomeBanner(
+            images = listOf(
+                R.drawable.god,
+                R.drawable.tekken,
+                R.drawable.donkey,
+                R.drawable.resident,
+                R.drawable.gta,
+                R.drawable.daxter,
+                R.drawable.metalgear
+            )
+        )
+
         AnimatedVisibility(state.showNoPermissionNotification) {
             HomeNotification(
                 titleId = R.string.home_notification_title,

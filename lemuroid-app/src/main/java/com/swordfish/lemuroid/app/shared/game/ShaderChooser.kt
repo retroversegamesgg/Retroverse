@@ -62,7 +62,9 @@ object ShaderChooser {
             SystemID.WS -> ShaderConfig.LCD
             SystemID.WSC -> ShaderConfig.LCD
             SystemID.NINTENDO_3DS -> ShaderConfig.LCD
-        }
+            SystemID.GAMECUBE -> ShaderConfig.CRT
+            SystemID.WII -> ShaderConfig.CRT
+         }
     }
 
     private fun getHDShaderForSystem(system: GameSystem, hdModeQuality: HDModeQuality): ShaderConfig {
@@ -288,6 +290,8 @@ object ShaderChooser {
             SystemID.WS -> upscale16BitsMobile
             SystemID.WSC -> upscale16BitsMobile
             SystemID.NINTENDO_3DS -> modern
+            SystemID.WII -> modern
+            SystemID.GAMECUBE -> modern
         }
     }
 }

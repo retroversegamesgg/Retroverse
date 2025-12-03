@@ -57,7 +57,7 @@ class CoreUpdaterImpl(
     ) {
         val sharedPreferences = SharedPreferencesHelper.getSharedPreferences(context.applicationContext)
         coreIDs.asFlow()
-            .onEach { retrieveAssets(it, sharedPreferences) }
+            .onEach { retrieveAssets(it, sharedPreferences, context) }
             .onEach { retrieveFile(context, it) }
             .collect()
     }
@@ -72,8 +72,9 @@ class CoreUpdaterImpl(
     private suspend fun retrieveAssets(
         coreID: CoreID,
         sharedPreferences: SharedPreferences,
+        context: Context
     ) {
-        CoreID.getAssetManager(coreID)
+        CoreID.getAssetManager(coreID, context)
             .retrieveAssetsIfNeeded(api, directoriesManager, sharedPreferences)
     }
 

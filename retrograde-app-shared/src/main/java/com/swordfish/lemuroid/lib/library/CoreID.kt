@@ -1,7 +1,9 @@
 package com.swordfish.lemuroid.lib.library
 
+import android.content.Context
 import android.content.SharedPreferences
 import com.swordfish.lemuroid.lib.core.CoreUpdater
+import com.swordfish.lemuroid.lib.core.assetsmanager.DolphinAssetsManager
 import com.swordfish.lemuroid.lib.core.assetsmanager.NoAssetsManager
 import com.swordfish.lemuroid.lib.core.assetsmanager.PPSSPPAssetsManager
 import com.swordfish.lemuroid.lib.storage.DirectoriesManager
@@ -111,12 +113,17 @@ enum class CoreID(
         "DosBox Pure",
         "libdosbox_pure_libretro_android.so",
     ),
-    ;
+    DOLPHIN(
+        "dolphin",
+        "Dolphin",
+        "dolphin_libretro_android.so"
+    );
 
     companion object {
-        fun getAssetManager(coreID: CoreID): AssetsManager {
+        fun getAssetManager(coreID: CoreID, context: Context): AssetsManager {
             return when (coreID) {
                 PPSSPP -> PPSSPPAssetsManager()
+                DOLPHIN -> DolphinAssetsManager()
                 else -> NoAssetsManager()
             }
         }
