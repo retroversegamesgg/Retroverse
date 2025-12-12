@@ -363,39 +363,11 @@ abstract class BaseGameActivity : ImmersiveActivity() {
                     }
                     is RomFiles.Virtual -> {
                         // Dolphin NÃO suporta virtual files, precisa copiar para arquivo real
-                        if (system.id == SystemID.GAMECUBE || system.id == SystemID.WII) {
-                            val virtualFile = gameFiles.files.first()
-                            Timber.d("Dolphin detected - copying virtual file to cache")
-                            Timber.d("Virtual file: ${virtualFile.filePath}")
-
-                            // Copiar para cache
-                            val cacheDir = File(cacheDir, "dolphin-games")
-                            cacheDir.mkdirs()
-
-                            val fileName = virtualFile.filePath.substringAfterLast("/")
-                            val cachedFile = File(cacheDir, fileName)
-
-                            Timber.d("Copying to: ${cachedFile.absolutePath}")
-
-                            // Copiar usando ParcelFileDescriptor
-                            val pfd = virtualFile.fd
-                            val inputStream = android.os.ParcelFileDescriptor.AutoCloseInputStream(pfd)
-
-                            inputStream.use { input ->
-                                cachedFile.outputStream().use { output ->
-                                    input.copyTo(output)
-                                }
-                            }
-
-                            gameFilePath = cachedFile.absolutePath
-                            Timber.d("File copied successfully - size: ${cachedFile.length() / 1024 / 1024} MB")
-                        } else {
                             // Outros cores suportam virtual files
                             gameVirtualFiles = gameFiles.files.map {
                                 VirtualFile(it.filePath, it.fd)
                             }
                         }
-                    }
                 }
 
                 systemDirectory = gameData.systemDirectory.absolutePath

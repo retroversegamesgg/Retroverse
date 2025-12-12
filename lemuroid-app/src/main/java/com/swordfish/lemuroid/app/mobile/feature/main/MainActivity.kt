@@ -11,6 +11,7 @@ import android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
 import android.view.View
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -163,15 +164,18 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     private fun ensureAllFilesPermission(context: Context, onGranted: () -> Unit) {
-        if (Environment.isExternalStorageManager()) {
-            onGranted()
-        } else {
-            val intent = Intent(
-                ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-                Uri.parse("package:${context.packageName}")
-            )
-            startActivity(intent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Environment.isExternalStorageManager()) {
+                onGranted()
+            } else {
+                val intent = Intent(
+                    ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                    Uri.parse("package:${context.packageName}")
+                )
+                startActivity(intent)
+            }
         }
     }
 

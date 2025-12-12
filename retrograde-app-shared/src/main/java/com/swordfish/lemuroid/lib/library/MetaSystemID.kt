@@ -113,16 +113,7 @@ enum class MetaSystemID(val titleResId: Int, val imageResId: Int, val systemIDs:
         R.drawable.n3ds,
         listOf(SystemID.NINTENDO_3DS),
     ),
-    GAMECUBE(
-        R.string.game_system_title_gamecube,
-        com.swordfish.touchinput.controller.R.drawable.button_coin,
-        listOf(SystemID.GAMECUBE),
-    ),
-    WII(
-        R.string.game_system_title_wii,
-        com.swordfish.touchinput.controller.R.drawable.button_mic,
-        listOf(SystemID.WII),
-    );
+    ;
 
     fun color(): Int {
         return ColorUtils.color(ordinal.toFloat() / values().size)
@@ -156,8 +147,6 @@ enum class MetaSystemID(val titleResId: Int, val imageResId: Int, val systemIDs:
                 SystemID.WS -> WS
                 SystemID.WSC -> WS
                 SystemID.NINTENDO_3DS -> NINTENDO_3DS
-                SystemID.WII -> WII
-                SystemID.GAMECUBE -> GAMECUBE
             }
         }
     }
