@@ -23,6 +23,7 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -67,7 +68,7 @@ fun LemuroidGameCard(
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick,
-                indication = rememberRipple(),
+                indication = ripple(),
                 interactionSource = remember { MutableInteractionSource() }.also { source ->
                     LaunchedEffect(source) {
                         source.interactions.collect { interaction ->

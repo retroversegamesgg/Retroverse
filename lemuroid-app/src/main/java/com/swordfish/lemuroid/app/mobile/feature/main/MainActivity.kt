@@ -3,13 +3,15 @@ package com.swordfish.lemuroid.app.mobile.feature.main
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
-import android.view.View
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -26,9 +28,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -123,6 +122,10 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge(
+            SystemBarStyle.dark(Color.TRANSPARENT),
+            SystemBarStyle.dark(Color.TRANSPARENT),
+        )
         super.onCreate(savedInstanceState)
 
         GlobalScope.safeLaunch {
@@ -251,7 +254,7 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
                     )
                 },
                 bottomBar = { MainNavigationBar(currentRoute, navController) },
-                containerColor = Color.Transparent,
+                containerColor = androidx.compose.ui.graphics.Color.Transparent,
             ) { padding ->
                 NavHost(
                     modifier = Modifier.fillMaxSize(),
@@ -267,10 +270,12 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
                                         HomeViewModel.Factory(
                                             applicationContext,
                                             retrogradeDb,
+                                            coresSelection,
                                         ),
                                 ),
                             onGameClick = onGameClick,
                             onGameLongClick = onGameLongClick,
+                            onOpenCoreSelection = { navController.navigateToRoute(MainRoute.SETTINGS_CORES_SELECTION) },
                         )
                     }
                     composable(MainRoute.FAVORITES) {
@@ -297,7 +302,6 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
                             onGameFavoriteToggle = onGameFavoriteToggle,
                             onResetSearchQuery = { mainViewModel.changeQueryString("") },
                         )
-
                     }
                     composable(MainRoute.SYSTEMS) {
                         MetaSystemsScreen(
@@ -448,7 +452,7 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
 
     override fun activity(): Activity = this
 
-    override fun isBusy(): Boolean = mainViewModel.state.value?.operationInProgress ?: false
+    override fun isBusy(): Boolean = mainViewModel.state.value.operationInProgress ?: false
 
     override fun onActivityResult(
         requestCode: Int,
